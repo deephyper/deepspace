@@ -11,8 +11,11 @@ class SupervisedRegAutoEncoderFactory(SpaceFactory):
         output_shape=[(1), (100,)],
         units=[128, 64, 32, 16, 8, 16, 32, 64, 128],
         num_layers=5,
+        **kwargs
     ):
-        super().__init__(input_shape, output_shape, unit=units, num_layers=num_layers)
+        super().__init__(
+            input_shape, output_shape, unit=units, num_layers=num_layers, **kwargs
+        )
 
     def build(self, input_shape, output_shape):
         ss = KSearchSpace(input_shape, output_shape)

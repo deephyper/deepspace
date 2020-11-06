@@ -18,6 +18,7 @@ class DenseSkipCoFactory(SpaceFactory):
         regression=True,
         num_layers=10,
         dropout=0.0,
+        **kwargs,
     ):
         super().__init__(
             input_shape,
@@ -25,6 +26,7 @@ class DenseSkipCoFactory(SpaceFactory):
             regression=regression,
             num_layers=num_layers,
             dropout=dropout,
+            **kwargs,
         )
 
     def build(self, input_shape, output_shape):
