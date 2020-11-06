@@ -6,7 +6,7 @@ from deephyper.nas.space.op.op1d import Dense
 
 
 class OneLayerFactory(SpaceFactory):
-    def __init__(self, input_shape=(10,), output_shape=(1,), regression=True):
+    def __init__(self, input_shape=(10,), output_shape=(1,), regression=True, **kwargs):
         super().__init__(input_shape, output_shape, regression=regression)
 
     def build(self, input_shape, output_shape):

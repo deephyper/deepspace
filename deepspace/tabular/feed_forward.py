@@ -27,6 +27,7 @@ class FeedForwardFactory(SpaceFactory):
         regression=True,
         num_units=(1, 11),
         num_layers=10,
+        **kwargs
     ):
         super().__init__(
             input_shape,
@@ -34,6 +35,7 @@ class FeedForwardFactory(SpaceFactory):
             regression=regression,
             num_units=num_units,
             num_layers=num_layers,
+            **kwargs
         )
 
     def build(self, input_shape, output_shape):
