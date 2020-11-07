@@ -5,19 +5,14 @@ from deephyper.nas.space.op.op1d import Dense, Identity
 
 
 class SupervisedRegAutoEncoderFactory(SpaceFactory):
-    def __init__(
+    def build(
         self,
-        input_shape=(10,),
-        output_shape=[(1), (100,)],
+        input_shape,
+        output_shape,
         units=[128, 64, 32, 16, 8, 16, 32, 64, 128],
         num_layers=5,
         **kwargs
     ):
-        super().__init__(
-            input_shape, output_shape, unit=units, num_layers=num_layers, **kwargs
-        )
-
-    def build(self, input_shape, output_shape):
         ss = KSearchSpace(input_shape, output_shape)
 
         inp = ss.input_nodes[0]
@@ -48,7 +43,7 @@ class SupervisedRegAutoEncoderFactory(SpaceFactory):
         # regressor
         prev_node = latente_space
         # prev_node = inp
-        for _ in range(self.num_layers):
+        for _ in range(num_layers):
             vnode = VariableNode()
             for i in range(16, 129, 16):
                 vnode.add_op(Dense(i, tf.nn.relu))
@@ -63,8 +58,9 @@ class SupervisedRegAutoEncoderFactory(SpaceFactory):
 
 
 if __name__ == "__main__":
+    shapes = dict(input_shape=(10,), output_shape=[(1), (100,)])
     factory = SupervisedRegAutoEncoderFactory()
-    # factory.test()
-    factory.plot_model()
-    # factory.plot_space()
+    factory.test(**shapes)
+    # factory.plot_model(**shapes)
+    # factory.plot_space(**shapes)
 

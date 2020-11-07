@@ -11,32 +11,22 @@ from deephyper.nas.space.op.op1d import Dense, Identity, Dropout
 
 
 class DenseSkipCoFactory(SpaceFactory):
-    def __init__(
+    def build(
         self,
-        input_shape=(10,),
-        output_shape=(1,),
+        input_shape,
+        output_shape,
         regression=True,
         num_layers=10,
         dropout=0.0,
         **kwargs,
     ):
-        super().__init__(
-            input_shape,
-            output_shape,
-            regression=regression,
-            num_layers=num_layers,
-            dropout=dropout,
-            **kwargs,
-        )
-
-    def build(self, input_shape, output_shape):
-        ss = AutoKSearchSpace(input_shape, output_shape, regression=self.regression)
+        ss = AutoKSearchSpace(input_shape, output_shape, regression=regression)
         source = prev_input = ss.input_nodes[0]
 
         # look over skip connections within a range of the 3 previous nodes
         anchor_points = collections.deque([source], maxlen=3)
 
-        for _ in range(self.num_layers):
+        for _ in range(num_layers):
             vnode = VariableNode()
             self.add_dense_to_(vnode)
 
@@ -59,8 +49,8 @@ class DenseSkipCoFactory(SpaceFactory):
             # ! for next iter
             anchor_points.append(prev_input)
 
-        if self.dropout >= 0.0:
-            dropout_node = ConstantNode(op=Dropout(rate=self.dropout))
+        if dropout >= 0.0:
+            dropout_node = ConstantNode(op=Dropout(rate=dropout))
             ss.connect(prev_input, dropout_node)
 
         return ss
@@ -75,7 +65,8 @@ class DenseSkipCoFactory(SpaceFactory):
 
 
 if __name__ == "__main__":
+    shapes = dict(input_shape=(10,), output_shape=(1,))
     factory = DenseSkipCoFactory()
-    # factory.test()
-    factory.plot_model()
-    # factory.plot_space()
+    factory.test(**shapes)
+    # factory.plot_model(**shapes)
+    # factory.plot_space(**shapes)
