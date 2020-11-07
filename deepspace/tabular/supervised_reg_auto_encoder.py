@@ -37,7 +37,7 @@ class SupervisedRegAutoEncoderFactory(SpaceFactory):
             ss.connect(prev_node, vnode)
             prev_node = vnode
 
-        out2 = ConstantNode(op=Dense(100, name="output_1"))
+        out2 = ConstantNode(op=Dense(output_shape[0][0], name="output_0"))
         ss.connect(prev_node, out2)
 
         # regressor
@@ -51,16 +51,21 @@ class SupervisedRegAutoEncoderFactory(SpaceFactory):
             ss.connect(prev_node, vnode)
             prev_node = vnode
 
-        out1 = ConstantNode(op=Dense(1, name="output_0"))
+        out1 = ConstantNode(op=Dense(output_shape[1][0], name="output_1"))
         ss.connect(prev_node, out1)
 
         return ss
 
 
 if __name__ == "__main__":
-    shapes = dict(input_shape=(10,), output_shape=[(1), (100,)])
+    shapes = dict(input_shape=(100,), output_shape=[(100,), (10,)])
     factory = SupervisedRegAutoEncoderFactory()
-    factory.test(**shapes)
-    # factory.plot_model(**shapes)
+    # factory.test(**shapes)
+    factory.plot_model(**shapes)
     # factory.plot_space(**shapes)
 
+# from deepspace.tabular import SupervisedRegAutoEncoderFactory
+
+# factory = SupervisedRegAutoEncoderFactory()(
+#     input_shape=(100,), output_shape=[(100), (10,)]
+# )
