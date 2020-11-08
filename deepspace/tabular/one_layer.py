@@ -6,11 +6,8 @@ from deephyper.nas.space.op.op1d import Dense
 
 
 class OneLayerFactory(SpaceFactory):
-    def __init__(self, input_shape=(10,), output_shape=(1,), regression=True, **kwargs):
-        super().__init__(input_shape, output_shape, regression=regression)
-
-    def build(self, input_shape, output_shape):
-        ss = AutoKSearchSpace(input_shape, output_shape, regression=self.regression)
+    def build(self, input_shape, output_shape, regression=True, **kwargs):
+        ss = AutoKSearchSpace(input_shape, output_shape, regression=regression)
 
         if type(input_shape) is list:
             vnodes = []
@@ -39,7 +36,8 @@ class OneLayerFactory(SpaceFactory):
 
 
 if __name__ == "__main__":
+    shapes = dict(input_shape=(10,), output_shape=(1,))
     factory = OneLayerFactory()
-    # factory.test()
-    # factory.plot_model()
-    factory.plot_space()
+    factory.test(**shapes)
+    # factory.plot_model(**shapes)
+    # factory.plot_space(**shapes)
