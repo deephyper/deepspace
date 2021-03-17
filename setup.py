@@ -19,7 +19,7 @@ on_gpu = type(os.environ.get("DH_GPU")) is str and "true" == os.environ.get("DH_
 NAME = "deepspace"
 DESCRIPTION = "A collection of search space for the DeepHyper package."
 URL = "https://github.com/deephyper/deepspace"
-REQUIRES_PYTHON = ">=3.6, <3.8"
+REQUIRES_PYTHON = ">=3.6, <3.9"
 VERSION = None
 
 # Build Author list
