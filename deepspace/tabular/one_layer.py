@@ -1,8 +1,11 @@
 import tensorflow as tf
-from deephyper.nas.space import AutoKSearchSpace, SpaceFactory
-from deephyper.nas.space.node import ConstantNode, VariableNode
-from deephyper.nas.space.op.merge import Concatenate
-from deephyper.nas.space.op.op1d import Dense
+
+from deephyper.nas import AutoKSearchSpace, SpaceFactory
+from deephyper.nas.node import ConstantNode, VariableNode
+from deephyper.nas.operation import operation, Concatenate
+
+Dense = operation(tf.keras.layers.Dense)
+Dropout = operation(tf.keras.layers.Dropout)
 
 
 class OneLayerFactory(SpaceFactory):
@@ -30,7 +33,7 @@ class OneLayerFactory(SpaceFactory):
 
     def gen_vnode(self) -> VariableNode:
         vnode = VariableNode()
-        for i in range(1, 11):
+        for i in range(1, 1000):
             vnode.add_op(Dense(i, tf.nn.relu))
         return vnode
 

@@ -2,12 +2,12 @@ import collections
 
 import tensorflow as tf
 
-from deephyper.nas.space import AutoKSearchSpace, SpaceFactory
-from deephyper.nas.space.node import ConstantNode, VariableNode
-from deephyper.nas.space.op.basic import Zero
-from deephyper.nas.space.op.connect import Connect
-from deephyper.nas.space.op.merge import AddByProjecting
-from deephyper.nas.space.op.op1d import Dense, Identity, Dropout
+from deephyper.nas import AutoKSearchSpace, SpaceFactory
+from deephyper.nas.node import ConstantNode, VariableNode
+from deephyper.nas.operation import operation, Zero, Connect, AddByProjecting, Identity
+
+Dense = operation(tf.keras.layers.Dense)
+Dropout = operation(tf.keras.layers.Dropout)
 
 
 class DenseSkipCoFactory(SpaceFactory):

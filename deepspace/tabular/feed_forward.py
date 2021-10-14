@@ -1,14 +1,13 @@
 import tensorflow as tf
+from deephyper.nas import AutoKSearchSpace, SpaceFactory
+from deephyper.nas.node import VariableNode
+from deephyper.nas.operation import Identity, operation
 
-from deephyper.nas.space import SpaceFactory
-from deephyper.nas.space import AutoKSearchSpace
-from deephyper.nas.space.node import VariableNode
-from deephyper.nas.space.op.op1d import Dense, Identity
+Dense = operation(tf.keras.layers.Dense)
 
 
 class FeedForwardFactory(SpaceFactory):
-    """Simple search space for a feed-forward neural network. No skip-connection. Looking over the number of units per layer and the number of layers.
-    """
+    """Simple search space for a feed-forward neural network. No skip-connection. Looking over the number of units per layer and the number of layers."""
 
     def build(
         self,

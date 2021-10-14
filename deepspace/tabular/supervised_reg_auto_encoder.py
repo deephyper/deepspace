@@ -1,7 +1,9 @@
 import tensorflow as tf
-from deephyper.nas.space import KSearchSpace, SpaceFactory
-from deephyper.nas.space.node import ConstantNode, VariableNode
-from deephyper.nas.space.op.op1d import Dense, Identity
+from deephyper.nas import KSearchSpace, SpaceFactory
+from deephyper.nas.node import ConstantNode, VariableNode
+from deephyper.nas.operation import Identity, operation
+
+Dense = operation(tf.keras.layers.Dense)
 
 
 class SupervisedRegAutoEncoderFactory(SpaceFactory):
