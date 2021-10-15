@@ -1,23 +1,29 @@
 import tensorflow as tf
-from deephyper.nas import KSearchSpace, SpaceFactory
+from deephyper.nas import KSearchSpace
 from deephyper.nas.node import ConstantNode, VariableNode
 from deephyper.nas.operation import Identity, operation
 
 Dense = operation(tf.keras.layers.Dense)
 
 
-class SupervisedRegAutoEncoderFactory(SpaceFactory):
-    def build(
+class SupervisedRegAutoEncoderSpace(KSearchSpace):
+    def __init__(
         self,
         input_shape,
         output_shape,
+        batch_size=None,
+        seed=None,
         units=[128, 64, 32, 16, 8, 16, 32, 64, 128],
         num_layers=5,
-        **kwargs
     ):
-        ss = KSearchSpace(input_shape, output_shape)
+        super().__init__(input_shape, output_shape, batch_size=batch_size, seed=seed)
 
-        inp = ss.input_nodes[0]
+        self.units = units
+        self.num_layers = num_layers
+
+    def build(self):
+
+        inp = self.input_nodes[0]
 
         # auto-encoder
         units = [128, 64, 32, 16, 8, 16, 32, 64, 128]
@@ -36,38 +42,33 @@ class SupervisedRegAutoEncoderFactory(SpaceFactory):
                     min(units[i], units[i + d]), max(units[i], units[i + d]) + 1, 2
                 ):
                     vnode.add_op(Dense(u, tf.nn.relu))
-            ss.connect(prev_node, vnode)
+            self.connect(prev_node, vnode)
             prev_node = vnode
 
-        out2 = ConstantNode(op=Dense(output_shape[0][0], name="output_0"))
-        ss.connect(prev_node, out2)
+        out2 = ConstantNode(op=Dense(self.output_shape[0][0], name="output_0"))
+        self.connect(prev_node, out2)
 
         # regressor
         prev_node = latente_space
         # prev_node = inp
-        for _ in range(num_layers):
+        for _ in range(self.num_layers):
             vnode = VariableNode()
             for i in range(16, 129, 16):
                 vnode.add_op(Dense(i, tf.nn.relu))
 
-            ss.connect(prev_node, vnode)
+            self.connect(prev_node, vnode)
             prev_node = vnode
 
-        out1 = ConstantNode(op=Dense(output_shape[1][0], name="output_1"))
-        ss.connect(prev_node, out1)
+        out1 = ConstantNode(op=Dense(self.output_shape[1][0], name="output_1"))
+        self.connect(prev_node, out1)
 
-        return ss
+        return self
 
 
 if __name__ == "__main__":
+    from tensorflow.keras.utils import plot_model
+
     shapes = dict(input_shape=(100,), output_shape=[(100,), (10,)])
-    factory = SupervisedRegAutoEncoderFactory()
-    # factory.test(**shapes)
-    factory.plot_model(**shapes)
-    # factory.plot_space(**shapes)
-
-# from deepspace.tabular import SupervisedRegAutoEncoderFactory
-
-# factory = SupervisedRegAutoEncoderFactory()(
-#     input_shape=(100,), output_shape=[(100), (10,)]
-# )
+    space = SupervisedRegAutoEncoderSpace(**shapes).build()
+    model = space.sample()
+    plot_model(model)
